@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Gardening.Models.NOAAWeather>
+
+@{
+    ViewBag.Title = "PastObservations";
+}
+
+<h2>PastObservations</h2>
+<table>
+@foreach (var item in Model)
+{
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.date)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.datatype)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.station)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.attributes)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.value)
+    </td>
+</tr>
+
+}
+</table>
