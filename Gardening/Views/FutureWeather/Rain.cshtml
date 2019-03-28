@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Rain";
+}
+
+<h2>Rain</h2>
+
+@foreach (var item in ViewBag.Results)
+{
+    <div /> <div />
+    <p>number event @item.number</p>
+    <h2>Day/Time @item.name</h2>
+    <p>Details @item.detailedForecast</p>
+    <div />
+    <div /><br /> <br />
+}
