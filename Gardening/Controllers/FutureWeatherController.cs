@@ -18,15 +18,23 @@ namespace Gardening.Controllers
         {
             APIKeyClass api = new APIKeyClass();
             string ForcastAPI = api.APIForecast;
-            HttpWebRequest request = WebRequest.CreateHttp(ForcastAPI);
+            string UAgent = api.agent;
+            string UAccept = api.accept;
 
+            HttpWebRequest request = (HttpWebRequest)WebRequest.CreateHttp(ForcastAPI);
+            request.UserAgent = UAgent;
+            request.Accept = UAccept;
+           
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             StreamReader rd = new StreamReader(response.GetResponseStream());
             string data = rd.ReadToEnd();
             rd.Close();
 
+            List<Forecast> Weekly = new List<Forecast>();
+
             MetaPeriods WeeklyForecast = JsonConvert.DeserializeObject<MetaPeriods>(data);
-            ViewBag.Results = WeeklyForecast;
+            Weekly.AddRange(WeeklyForecast.periods.ToList());
+            ViewBag.Results = Weekly;
             return View();
         }
     }
