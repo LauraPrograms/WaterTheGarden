@@ -5,12 +5,34 @@
 
 <h2>Rain</h2>
 
-@foreach (var item in ViewBag.Results)
+@if (ViewBag.Results != null)
 {
-    <div /> <div />
-    <p>number event @item.number</p>
-    <h2>Day/Time @item.name</h2>
-    <p>Details @item.detailedForecast</p>
-    <div />
-    <div /><br /> <br />
+    foreach (var item in ViewBag.Results)
+    {<h>These are the days you will need to water</h>
+        <div>
+            <h2>Day/Time @item.name</h2>
+            <p>number event @item.number</p>
+            <p>Details @item.detailedForecast</p>
+            <br /> <br />
+        </div>
+        <p>------------------------------------------------------</p>
+    }
+}
+@if (ViewBag.Waterdays != null)
+{foreach (var item in ViewBag.Waterdays)
+    {<h>Expect Water!</h>
+
+        <div>
+            <h2>Day/Time @item.name</h2>
+            <p>Number in API @item.eventNumber</p>
+            <p>Weather @item.weather</p>
+            <p> Should I water the plants? @item.waterPlants</p>
+            <br /> <br />
+        </div>
+        <p>*****************************************************</p>
+    }
+}
+else
+{
+<h1>@ViewBag.NeedWater</h1>
 }

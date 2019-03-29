@@ -132,6 +132,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DailyWeather.cs" />
     <Compile Include="Models\Forecast.cs" />
     <Compile Include="Models\NOAAWeather.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

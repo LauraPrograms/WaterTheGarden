@@ -37,17 +37,26 @@ namespace Gardening.Controllers
             Weekly.AddRange(WeeklyForecast.periods.ToList());
 
             //make a method to determine if there is rain
-            List<string> TestMethodList = DaysOfRain(Weekly);
-
-
-            ViewBag.Results = Weekly;
+            List<DailyWeather> WetDays = DaysOfRain(Weekly);
+            if (WetDays != null)
+            {
+                ViewBag.Waterdays = WetDays;
+            }
+            else
+            {
+                ViewBag.NeedWater = "Its going to be dry for the next week.";
+            }
+            List<Forecast> DryDays = (List<Forecast>)Session["forecasts"];
+            ViewBag.Results = DryDays;
             return View();
         }
         //make a list of key words to figure out how to parse the various words (rain, precipitation, showers) and get the percent
-        public List<string> DaysOfRain(List<Forecast> forecasts)
+        public List<DailyWeather> DaysOfRain(List<Forecast> forecasts)
         {
             List<string> RainWords = new List<string>() { "rain", "shower", "precipitation" };
-            List<string> RainyDays = new List<string>();
+            List<DailyWeather> RainyDays = new List<DailyWeather>();
+            int rainPercent;
+            
             foreach (Forecast Event in forecasts)
             {
                 string[] EventWeatherList = Event.detailedForecast.ToLower().Split('.');
@@ -55,26 +64,41 @@ namespace Gardening.Controllers
                 {
                     List<string> wetDay = EventWeatherList.Where(x => x.Contains(RainWords[i])
                                                             && x.Contains("percent")).ToList();
-                    foreach(string wetEvent in wetDay)
+                    if (wetDay != null)
                     {
-                        char[] rainChance = wetEvent.Where(Char.IsDigit).ToArray();
-                        string percentage = String.Join("", rainChance);
-                        int rainPercent = int.Parse(percentage);
+                        foreach (string wetEvent in wetDay)
+                        {
+                            DailyWeather dw = new DailyWeather();
+                            char[] rainChance = wetEvent.Where(Char.IsDigit).ToArray();
+                            string percentage = String.Join("", rainChance);
+                            rainPercent = int.Parse(percentage);
+                            dw.eventNumber = Event.EventNumber;
+                            dw.name = Event.name;
+                            dw.weather = "Chance of precipitation";
+                            if (rainPercent >= 50)
+                            {
+                                dw.waterPlants = "No";
+                            }
+                            else if (rainPercent < 50 && rainPercent > 30)
+                            {
+                                dw.waterPlants = "Check the hygrometer";
+                            }
+                            else
+                            {
+                                dw.waterPlants = "Yes";
+                            }
+                            RainyDays.Add(dw);
+                        }
                     }
-                    
-                    //int[] percent = Array.ConvertAll(rainChance, c => (int)Char.GetNumericValue(c));
-                   
-                   
+
                 }
 
+            }            
+            for (int i = 0; i < RainyDays.Count(); i++)
+            {
+                forecasts.RemoveAll(e => e.EventNumber == RainyDays[i].eventNumber);
             }
-            //foreach (string weather in EventWeatherList)
-            //{
-            //    ///use linq check if the even has the key words (store in a list of strings) and then build a new object that requires the percent, day name, and add the date based off current date, and max temperature
-
-            //}
-
-
+            Session["forecasts"] = forecasts;
             return RainyDays;
         }
     }
