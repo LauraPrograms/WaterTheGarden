@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -50,7 +51,7 @@ namespace Gardening.Controllers
             ViewBag.Results = DryDays;
             return View();
         }
-        //make a list of key words to figure out how to parse the various words (rain, precipitation, showers) and get the percent
+        
         public List<DailyWeather> DaysOfRain(List<Forecast> forecasts)
         {
             List<string> RainWords = new List<string>() { "rain", "shower", "precipitation" };
@@ -74,6 +75,7 @@ namespace Gardening.Controllers
                             rainPercent = int.Parse(percentage);
                             dw.eventNumber = Event.EventNumber;
                             dw.name = Event.name;
+                            dw.temperature = GetTemperature(EventWeatherList);
                             dw.weather = "Chance of precipitation";
                             if (rainPercent >= 50)
                             {
@@ -100,6 +102,17 @@ namespace Gardening.Controllers
             }
             Session["forecasts"] = forecasts;
             return RainyDays;
+        }
+
+        public int GetTemperature(string[] EventWeatherList)
+        {
+            int temperature=0;
+            List<string> eventTemperature = EventWeatherList.Where(x => x.Contains("highs") || x.Contains("lows")).ToList();
+            foreach(string eventTemp in eventTemperature)
+            {  string result = Regex.Match(eventTemp, @"\d+").Value;
+                temperature = int.Parse(result);
+            }
+            return temperature;
         }
     }
 

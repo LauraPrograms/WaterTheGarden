@@ -9,6 +9,7 @@ namespace Gardening.Models
     {
         public int eventNumber { get; set; }
         public string name { get; set; }
+        public int temperature { get; set; }
         public string weather { get; set; }
         public string waterPlants { get; set; }
     }
