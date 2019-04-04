@@ -8,6 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace Gardening.Controllers
 {
@@ -15,6 +18,8 @@ namespace Gardening.Controllers
     {
         //reference for later in getting soil temperature predictions https://www.ncdc.noaa.gov/cdo-web/api/v2/datatypes?offset=500&limit=500
         //reference to explain local codes https://www.ncdc.noaa.gov/cdo-web/api/v2/datacategories?locationid=ZIP:48242
+
+
         public ActionResult Index()
         {
             return View();
@@ -108,7 +113,19 @@ namespace Gardening.Controllers
 
 
 
-        public string 
+        public void GetDataTypesForDatabase()
+        {
+            APIKeyClass keys = new APIKeyClass();
+            string NOAAkey = keys.NKey;
+            string locationid = keys.locationA;
+            string NOAAAPI = "https://www.ncdc.noaa.gov/cdo-web/api/v2/datatypes?limit=1000";
+            HttpWebRequest WR = WebRequest.CreateHttp(NOAAAPI);
+            WR.Headers.Add("token", NOAAkey);
+            HttpWebResponse Response = (HttpWebResponse)WR.GetResponse();
+            StreamReader rd = new StreamReader(Response.GetResponseStream());
+            string data = rd.ReadToEnd();
+            rd.Close();
+        }
 
 }
 }

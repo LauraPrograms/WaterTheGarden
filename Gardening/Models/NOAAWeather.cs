@@ -18,4 +18,12 @@ namespace Gardening.Models
     {
         public List<NOAAWeather> results { get; set; }
     }
+
+    public class datatype
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+
+    }
+
 }
